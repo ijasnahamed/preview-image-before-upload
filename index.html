@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Show Image before upload</title>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+  function SingleFileHandler(evt) {
+    var file = evt.target.files;
+
+    var f = file[0]
+
+    if (!f.type.match('image.*')) {
+      alert("Please Select Image.");
+    }
+
+    var file_reader = new FileReader();
+
+    file_reader.onload = (function(theFile) {
+        return function(e) {
+          var span = document.createElement('span');
+          span.innerHTML = ['<img class="img-thumbnail" src="', e.target.result, '" title="', escape(theFile.name), '"/>'].join('');
+          document.getElementById('outputSingle').innerHTML = "";
+          document.getElementById('outputSingle').insertBefore(span, null);
+        };
+      })(f);
+
+    file_reader.readAsDataURL(f);
+  }
+
+  function MultipleFilehandler(evt) {
+    var files = evt.target.files; // FileList object
+    document.getElementById('outputMultiple').innerHTML = "";
+    for (var i = 0, f; f = files[i]; i++) {
+
+      if (!f.type.match('image.*')) {
+        alert("Please select Images only.");
+      }
+
+      var file_reader = new FileReader();
+
+      file_reader.onload = (function(theFile) {
+        return function(e) {
+          var span = document.createElement('span');
+          span.innerHTML = ['<img class="img-thumbnail" src="', e.target.result, '" title="', escape(theFile.name), '"/>'].join('');
+          document.getElementById('outputMultiple').insertBefore(span, null);
+        };
+      })(f);
+
+      file_reader.readAsDataURL(f);
+    }
+  }
+
+  $(document).ready(function(){
+    var multifilediv = document.getElementById('fileMultiple');
+    if(multifilediv){
+      multifilediv.addEventListener('change', MultipleFilehandler, false);
+    }
+
+    var filediv = document.getElementById('fileSingle');
+    if(filediv){
+      filediv.addEventListener('change', SingleFileHandler, false);
+    }
+  });
+
+</script>
+<style>
+  .img-thumbnail {
+    height: 100px;
+  }
+</style>
+</head>
+<body>
+  
+  <div class="container">
+    <div class="row">
+      <label>Single File:</label>
+      <input type="file" id="fileSingle" name="fileSingle" />
+    </div>
+
+    <br><br>
+
+    <div class="row">
+      <span id="outputSingle"></span>
+    </div>
+
+    <br><br>
+
+    <div class="row">
+      <label>Multiple Files:</label>
+      <input type="file" id="fileMultiple" name="fileMultiple[]" multiple />
+    </div>
+
+    <br><br>
+
+    <div class="row">
+      <span id="outputMultiple"></span>
+    </div>
+  </div>
+</body>
+</html>
+
